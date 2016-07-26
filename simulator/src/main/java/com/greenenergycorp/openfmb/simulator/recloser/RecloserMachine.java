@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class RecloserMachine {
 
@@ -40,6 +41,8 @@ public class RecloserMachine {
     private final Map<String, Double> solars = new HashMap<String, Double>();
 
     private final Object mutex = new Object();
+
+    private final Random random = new Random();
 
     public RecloserMachine(RecloserObserver observer, double voltage, double frequency, double kvars) {
         this.observer = observer;
@@ -107,7 +110,10 @@ public class RecloserMachine {
                     total += -v;
                 }
 
-                observer.recloserReadUpdate(total, voltage, frequency, kvars);
+                final double freq = frequency + ((random.nextDouble() * 0.001 * frequency) - (frequency * 0.001 / 2));
+                final double volts = voltage + ((random.nextDouble() * 0.001 * voltage) - (voltage * 0.001 / 2));
+
+                observer.recloserReadUpdate(total, voltage, freq, volts);
                 observer.recloserEventUpdate(isClosed, false);
             } else {
                 observer.recloserReadUpdate(0.0, 0.0, 0.0, 0.0);
