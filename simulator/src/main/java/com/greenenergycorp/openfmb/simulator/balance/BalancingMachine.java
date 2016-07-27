@@ -16,24 +16,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.recloser;
+package com.greenenergycorp.openfmb.simulator.balance;
 
+import com.greenenergycorp.openfmb.simulator.recloser.SystemPowerObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-public class RecloserMachine implements SystemPowerObserver {
+public class BalancingMachine implements SystemPowerObserver, RecloserStatusObserver {
+    private final static Logger logger = LoggerFactory.getLogger(BalancingMachine.class);
 
-    private final static Logger logger = LoggerFactory.getLogger(RecloserMachine.class);
-
-    private final RecloserObserver observer;
-
-    private final double voltage;
-    private final double frequency;
-    private final double kvars;
+    private final String sourceLogicalDeviceId;
+    private final BatteryControlPublisher publisher;
 
     private boolean isClosed = true;
     private final Map<String, Double> batteries = new HashMap<String, Double>();
@@ -42,35 +38,30 @@ public class RecloserMachine implements SystemPowerObserver {
 
     private final Object mutex = new Object();
 
-    private final Random random = new Random();
-
-    public RecloserMachine(RecloserObserver observer, double voltage, double frequency, double kvars) {
-        this.observer = observer;
-        this.voltage = voltage;
-        this.frequency = frequency;
-        this.kvars = kvars;
+    public BalancingMachine(String sourceLogicalDeviceId, BatteryControlPublisher publisher) {
+        this.sourceLogicalDeviceId = sourceLogicalDeviceId;
+        this.publisher = publisher;
     }
 
-    public void push() {
+    public void updateRecloserStatus(final boolean nextIsClosed) {
         synchronized (mutex) {
-            computeUpdate();
-        }
-    }
-
-    public void handleOpen() {
-        synchronized (mutex) {
-            if (isClosed) {
+            if (isClosed && !nextIsClosed) {
                 isClosed = false;
-                computeUpdate();
-            }
-        }
-    }
-
-    public void handleClose() {
-        synchronized (mutex) {
-            if (!isClosed) {
+                try {
+                    logger.info("Detected islanding...");
+                    publisher.setPowerSetpoint(totalPower());
+                    publisher.setIslanded();
+                } catch (Throwable ex) {
+                    logger.error("Could not respond to islanding: " + ex);
+                }
+            } else if (!isClosed && nextIsClosed) {
                 isClosed = true;
-                computeUpdate();
+                try {
+                    logger.info("Detected closing...");
+                    publisher.leaveIslanded();
+                } catch (Throwable ex) {
+                    logger.error("Could not respond to de-islanding: " + ex);
+                }
             }
         }
     }
@@ -96,31 +87,31 @@ public class RecloserMachine implements SystemPowerObserver {
         }
     }
 
+    private double totalPower() {
+        double total = 0.0;
+        for (final Double v : loads.values()) {
+            total += v;
+        }
+        for (final Map.Entry<String, Double> entry : batteries.entrySet()) {
+            if (!entry.getKey().equals(sourceLogicalDeviceId)) {
+                total += -entry.getValue();
+            }
+        }
+        for (final Double v : solars.values()) {
+            total += -v;
+        }
+        return total;
+    }
+
+
     private void computeUpdate() {
         try {
-            if (isClosed) {
-                double total = 0.0;
-                for (final Double v : loads.values()) {
-                    total += v;
-                }
-                for (final Double v : batteries.values()) {
-                    total += -v;
-                }
-                for (final Double v : solars.values()) {
-                    total += -v;
-                }
-
-                final double freq = frequency + ((random.nextDouble() * 0.001 * frequency) - (frequency * 0.001 / 2));
-                final double volts = voltage + ((random.nextDouble() * 0.001 * voltage) - (voltage * 0.001 / 2));
-
-                observer.recloserReadUpdate(total, voltage, freq, volts);
-                observer.recloserEventUpdate(isClosed, false);
-            } else {
-                observer.recloserReadUpdate(0.0, 0.0, 0.0, 0.0);
-                observer.recloserEventUpdate(isClosed, false);
+            if (!isClosed) {
+                final double power = totalPower();
+                publisher.setPowerSetpoint(power);
             }
         } catch (Exception ex) {
-            logger.warn("Could not publish recloser update: " + ex);
+            logger.warn("Could not publish update: " + ex);
         }
     }
 }

@@ -18,6 +18,7 @@
  */
 package com.greenenergycorp.openfmb.simulator.xml;
 
+import com.greenenergycorp.openfmb.mapping.data.xml.CommonMapping;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.xml.*;
 
@@ -80,6 +81,80 @@ public class BatteryModel {
         batteryStatus.setQualityFlag(new byte[] {0, 0});
 
         profile.setBatteryStatus(batteryStatus);
+
+        return profile;
+    }
+
+
+    public static BatteryControlProfile buildBatteryControlIsIslanded(final DeviceId id) throws Exception {
+
+        final long now = System.currentTimeMillis();
+        final XMLGregorianCalendar calendarNow = CommonMapping.xmlTimeFor(now);
+
+        final BatteryControlProfile profile = new BatteryControlProfile();
+        profile.setLogicalDeviceID(id.getLogicalDeviceId());
+        profile.setTimestamp(calendarNow);
+
+        profile.setBatterySystem(buildBatteryDescription(id));
+
+        final BatterySystemControl batteryControl = new BatterySystemControl();
+        batteryControl.setIsIslanded(true);
+
+        profile.setBatterySystemControl(batteryControl);
+
+        return profile;
+    }
+
+    public static BatteryControlProfile buildBatteryControlPowerSetpoint(final DeviceId id, final double power) throws Exception {
+
+        final long now = System.currentTimeMillis();
+        final XMLGregorianCalendar calendarNow = CommonMapping.xmlTimeFor(now);
+
+        final BatteryControlProfile profile = new BatteryControlProfile();
+        profile.setLogicalDeviceID(id.getLogicalDeviceId());
+        profile.setTimestamp(calendarNow);
+
+        profile.setBatterySystem(buildBatteryDescription(id));
+
+        final BatterySystemControl batteryControl = new BatterySystemControl();
+        batteryControl.setIsIslanded(false);
+
+        final SetPoint setPoint = new SetPoint();
+        setPoint.setUnit(UnitSymbolKind.W);
+        setPoint.setMultiplier(UnitMultiplierKind.KILO);
+        setPoint.setControlType("SetRealPower");
+        setPoint.setValue((float)power);
+
+        batteryControl.getSetPoints().add(setPoint);
+
+        profile.setBatterySystemControl(batteryControl);
+
+        return profile;
+    }
+
+    public static BatteryControlProfile buildBatteryControlModeSetpoint(final DeviceId id, final int mode) throws Exception {
+
+        final long now = System.currentTimeMillis();
+        final XMLGregorianCalendar calendarNow = CommonMapping.xmlTimeFor(now);
+
+        final BatteryControlProfile profile = new BatteryControlProfile();
+        profile.setLogicalDeviceID(id.getLogicalDeviceId());
+        profile.setTimestamp(calendarNow);
+
+        profile.setBatterySystem(buildBatteryDescription(id));
+
+        final BatterySystemControl batteryControl = new BatterySystemControl();
+        batteryControl.setIsIslanded(false);
+
+        final SetPoint setPoint = new SetPoint();
+        setPoint.setUnit(UnitSymbolKind.NO_UNIT);
+        setPoint.setMultiplier(UnitMultiplierKind.NO_MULTIPLIER);
+        setPoint.setControlType("SetMode");
+        setPoint.setValue((float)mode);
+
+        batteryControl.getSetPoints().add(setPoint);
+
+        profile.setBatterySystemControl(batteryControl);
 
         return profile;
     }

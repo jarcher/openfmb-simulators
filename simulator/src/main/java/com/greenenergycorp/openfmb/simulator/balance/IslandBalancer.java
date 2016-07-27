@@ -16,7 +16,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.recloser;
+package com.greenenergycorp.openfmb.simulator.balance;
 
 import com.greenenergycorp.openfmb.mapping.adapter.PayloadObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
@@ -25,6 +25,7 @@ import com.greenenergycorp.openfmb.mapping.mqtt.MqttConfiguration;
 import com.greenenergycorp.openfmb.mapping.mqtt.MqttObserver;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.PropertyUtil;
+import com.greenenergycorp.openfmb.simulator.recloser.SystemSubscribers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +33,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class RecloserSimulator {
+public class IslandBalancer {
 
-    private final static Logger logger = LoggerFactory.getLogger(RecloserSimulator.class);
+    private final static Logger logger = LoggerFactory.getLogger(IslandBalancer.class);
 
     public static void main(final String[] args) throws Exception {
 
-        final String simConfigPath = System.getProperty("config.sim.path", "reclosersim.properties");
+        final String simConfigPath = System.getProperty("config.sim.path", "balancer.properties");
 
         final Properties simProps = PropertyUtil.optionallyLoad(simConfigPath, System.getProperties());
 
@@ -49,18 +50,15 @@ public class RecloserSimulator {
 
         final DeviceId deviceId = new DeviceId(logicalDeviceId, mRid, name, description);
 
+        final String recloserLogicalDeviceId = PropertyUtil.propOrThrow(simProps, "recloser.logicalDeviceID");
+
         final String recloserEventTopic = PropertyUtil.propOrThrow(simProps, "topic.RecloserEventProfile");
-        final String recloserReadTopic = PropertyUtil.propOrThrow(simProps, "topic.RecloserReadingProfile");
-        final String recloserControlTopic = PropertyUtil.propOrThrow(simProps, "topic.RecloserControlProfile");
 
         final String batteryReadTopic = PropertyUtil.propOrThrow(simProps, "topic.BatteryReadingProfile");
         final String resourceReadTopic = PropertyUtil.propOrThrow(simProps, "topic.ResourceReadingProfile");
         final String solarReadTopic = PropertyUtil.propOrThrow(simProps, "topic.SolarReadingProfile");
 
-        final double voltage = PropertyUtil.propDoubleOrThrow(simProps, "recloser.voltage");
-        final double hertz = PropertyUtil.propDoubleOrThrow(simProps, "recloser.hertz");
-
-        final long intervalMs = PropertyUtil.propLongOrThrow(simProps, "config.intervalMs");
+        final String batteryControlTopic = PropertyUtil.propOrThrow(simProps, "topic.BatteryControlProfile");
 
         final OpenFmbXmlMarshaller openFmbXmlMarshaller = new OpenFmbXmlMarshaller();
 
@@ -78,12 +76,12 @@ public class RecloserSimulator {
             }
         }, "mqtt publisher");
 
-        final RecloserPublisher recloserPublisher = new RecloserPublisher(mqttObserver, deviceId, openFmbXmlMarshaller, recloserReadTopic, recloserEventTopic);
+        final BatteryControlPublisher publisher = new BatteryControlPublisher(mqttObserver, deviceId, openFmbXmlMarshaller, batteryControlTopic);
 
-        final RecloserMachine machine = new RecloserMachine(recloserPublisher, voltage, hertz, 0.0);
+        final BalancingMachine machine = new BalancingMachine(logicalDeviceId, publisher);
 
         final Map<String, PayloadObserver> controlHandlerMap = new HashMap<String, PayloadObserver>();
-        controlHandlerMap.put(recloserControlTopic + "/" + deviceId.getLogicalDeviceId(), new SystemSubscribers.RecloserControlSubscriber(machine, openFmbXmlMarshaller, logicalDeviceId));
+        controlHandlerMap.put(recloserEventTopic + "/" + recloserLogicalDeviceId, new BalancerRecloserSubscriber(machine, openFmbXmlMarshaller, recloserLogicalDeviceId));
         controlHandlerMap.put(batteryReadTopic + "/#", new SystemSubscribers.BatteryReadSubscriber(machine, openFmbXmlMarshaller));
         controlHandlerMap.put(solarReadTopic + "/#", new SystemSubscribers.SolarReadSubscriber(machine, openFmbXmlMarshaller));
         controlHandlerMap.put(resourceReadTopic + "/#", new SystemSubscribers.ResourceReadSubscriber(machine, openFmbXmlMarshaller));
@@ -92,11 +90,8 @@ public class RecloserSimulator {
 
         mqttThread.start();
 
-        logger.info("Pushing updates every " + intervalMs + " ms");
-        while (true) {
-            machine.push();
-            Thread.sleep(intervalMs);
-        }
+        System.out.println("ctrc-c to quit");
+        System.in.read();
 
     }
 }

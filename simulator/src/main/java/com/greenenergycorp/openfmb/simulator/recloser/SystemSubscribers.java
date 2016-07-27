@@ -24,7 +24,7 @@ import com.greenenergycorp.openfmb.xml.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RecloserSubscribers {
+public class SystemSubscribers {
 
 
     public static class RecloserControlSubscriber implements PayloadObserver {
@@ -71,10 +71,10 @@ public class RecloserSubscribers {
     public static class BatteryReadSubscriber implements PayloadObserver {
         private final static Logger logger = LoggerFactory.getLogger(BatteryReadSubscriber.class);
 
-        private final RecloserMachine machine;
+        private final SystemPowerObserver machine;
         private final OpenFmbXmlMarshaller marshaller;
 
-        public BatteryReadSubscriber(RecloserMachine machine, OpenFmbXmlMarshaller marshaller) {
+        public BatteryReadSubscriber(SystemPowerObserver machine, OpenFmbXmlMarshaller marshaller) {
             this.machine = machine;
             this.marshaller = marshaller;
         }
@@ -105,10 +105,10 @@ public class RecloserSubscribers {
     public static class SolarReadSubscriber implements PayloadObserver {
         private final static Logger logger = LoggerFactory.getLogger(SolarReadSubscriber.class);
 
-        private final RecloserMachine machine;
+        private final SystemPowerObserver machine;
         private final OpenFmbXmlMarshaller marshaller;
 
-        public SolarReadSubscriber(RecloserMachine machine, OpenFmbXmlMarshaller marshaller) {
+        public SolarReadSubscriber(SystemPowerObserver machine, OpenFmbXmlMarshaller marshaller) {
             this.machine = machine;
             this.marshaller = marshaller;
         }
@@ -139,10 +139,10 @@ public class RecloserSubscribers {
     public static class ResourceReadSubscriber implements PayloadObserver {
         private final static Logger logger = LoggerFactory.getLogger(ResourceReadSubscriber.class);
 
-        private final RecloserMachine machine;
+        private final SystemPowerObserver machine;
         private final OpenFmbXmlMarshaller marshaller;
 
-        public ResourceReadSubscriber(RecloserMachine machine, OpenFmbXmlMarshaller marshaller) {
+        public ResourceReadSubscriber(SystemPowerObserver machine, OpenFmbXmlMarshaller marshaller) {
             this.machine = machine;
             this.marshaller = marshaller;
         }
