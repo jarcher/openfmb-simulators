@@ -49,8 +49,8 @@ public class RecloserPublisher implements RecloserObserver {
         final RecloserReadingProfile readProfile = RecloserModel.buildRecloserRead(deviceId, Arrays.asList(
                 ModelCommon.buildReading(power, now, UnitSymbolKind.W, UnitMultiplierKind.KILO, FlowDirectionKind.TOTAL, PhaseCodeKind.ABCN),
                 ModelCommon.buildReading(voltage, now, UnitSymbolKind.V, UnitMultiplierKind.NO_MULTIPLIER, FlowDirectionKind.TOTAL, PhaseCodeKind.ABCN),
-                ModelCommon.buildReading(frequency, now, UnitSymbolKind.HZ, UnitMultiplierKind.NO_MULTIPLIER, FlowDirectionKind.TOTAL, PhaseCodeKind.ABCN),
-                ModelCommon.buildReading(kvars, now, UnitSymbolKind.V_AR, UnitMultiplierKind.NO_MULTIPLIER, FlowDirectionKind.TOTAL, PhaseCodeKind.ABCN)
+                ModelCommon.buildReading(frequency, now, UnitSymbolKind.HZ, UnitMultiplierKind.NO_MULTIPLIER, FlowDirectionKind.TOTAL, PhaseCodeKind.ABCN)/*,
+                ModelCommon.buildReading(kvars, now, UnitSymbolKind.V_AR, UnitMultiplierKind.NO_MULTIPLIER, FlowDirectionKind.TOTAL, PhaseCodeKind.ABCN)*/
         ));
 
         final byte[] payloadBytes = marshaller.marshal(readProfile);

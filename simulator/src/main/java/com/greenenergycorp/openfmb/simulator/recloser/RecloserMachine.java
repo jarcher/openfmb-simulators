@@ -98,6 +98,9 @@ public class RecloserMachine implements SystemPowerObserver {
 
     private void computeUpdate() {
         try {
+            final double freq = frequency + ((random.nextDouble() * 0.001 * frequency) - (frequency * 0.001 / 2));
+            final double volts = voltage + ((random.nextDouble() * 0.001 * voltage) - (voltage * 0.001 / 2));
+
             if (isClosed) {
                 double total = 0.0;
                 for (final Double v : loads.values()) {
@@ -110,13 +113,10 @@ public class RecloserMachine implements SystemPowerObserver {
                     total += -v;
                 }
 
-                final double freq = frequency + ((random.nextDouble() * 0.001 * frequency) - (frequency * 0.001 / 2));
-                final double volts = voltage + ((random.nextDouble() * 0.001 * voltage) - (voltage * 0.001 / 2));
-
-                observer.recloserReadUpdate(total, voltage, freq, volts);
+                observer.recloserReadUpdate(total, volts, freq, 0.0);
                 observer.recloserEventUpdate(isClosed, false);
             } else {
-                observer.recloserReadUpdate(0.0, 0.0, 0.0, 0.0);
+                observer.recloserReadUpdate(0.0, volts, freq, 0.0);
                 observer.recloserEventUpdate(isClosed, false);
             }
         } catch (Exception ex) {
