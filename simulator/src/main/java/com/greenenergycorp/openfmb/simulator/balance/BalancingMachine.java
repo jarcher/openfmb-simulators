@@ -68,8 +68,10 @@ public class BalancingMachine implements SystemPowerObserver, RecloserStatusObse
 
     public void updateBatteryPower(final String id, final double power) {
         synchronized (mutex) {
-            batteries.put(id, power);
-            computeUpdate();
+            if (!id.equals(sourceLogicalDeviceId)) {
+                batteries.put(id, power);
+                computeUpdate();
+            }
         }
     }
 
@@ -92,10 +94,8 @@ public class BalancingMachine implements SystemPowerObserver, RecloserStatusObse
         for (final Double v : loads.values()) {
             total += v;
         }
-        for (final Map.Entry<String, Double> entry : batteries.entrySet()) {
-            if (!entry.getKey().equals(sourceLogicalDeviceId)) {
-                total += -entry.getValue();
-            }
+        for (final Double v : batteries.values()) {
+            total += -v;
         }
         for (final Double v : solars.values()) {
             total += -v;
