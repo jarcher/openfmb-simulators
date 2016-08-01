@@ -107,10 +107,10 @@ public class RecloserMachine implements SystemPowerObserver {
                     total += v;
                 }
                 for (final Double v : batteries.values()) {
-                    total += -v;
+                    total += v;
                 }
                 for (final Double v : solars.values()) {
-                    total += -v;
+                    total += v;
                 }
 
                 observer.recloserReadUpdate(total, volts, freq, 0.0);

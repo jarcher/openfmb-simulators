@@ -109,7 +109,7 @@ public class SolarSimulator {
 
             try {
                 final double inputValue = dataSource.atTime(now);
-                final double scaledValue = inputValue * scale + offset;
+                final double scaledValue = -1 * inputValue * scale + offset;
 
                 final double jitteredValue;
                 if (random.nextDouble() <= jitterChance) {

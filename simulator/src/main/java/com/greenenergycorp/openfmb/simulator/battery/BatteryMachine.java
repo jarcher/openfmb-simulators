@@ -123,7 +123,7 @@ public class BatteryMachine {
     private void transitionToMaintainStandbyMode() {
         updateSoc();
         if (soc < 0.5) {
-            power = -batterySpec.getMaxChargeRatekW();
+            power = batterySpec.getMaxChargeRatekW();
         } else {
             power = 0.0;
         }
@@ -150,7 +150,7 @@ public class BatteryMachine {
 
             final double energyDelta = power * TimeUtil.millisecondsToHours(elapsedMs);
             final double prevEnergy = soc * batterySpec.energyRatingkWh;
-            final double potentialNextEnergy = prevEnergy - energyDelta;
+            final double potentialNextEnergy = prevEnergy + energyDelta;
 
             final double nextEnergy;
             if (potentialNextEnergy > batterySpec.energyMaxkWh) {
@@ -183,7 +183,7 @@ public class BatteryMachine {
         try {
             updateObserver.batteryReadUpdate(power, volts, freq);
 
-            updateObserver.batteryEventUpdate(true, power < 0, mode.getDescription(), soc * 100);
+            updateObserver.batteryEventUpdate(true, power >= 0, mode.getDescription(), soc * 100);
 
         } catch (Exception ex) {
             logger.error("Failure to update state: " + ex);

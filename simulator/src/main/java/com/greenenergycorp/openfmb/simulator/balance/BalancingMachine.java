@@ -95,10 +95,10 @@ public class BalancingMachine implements SystemPowerObserver, RecloserStatusObse
             total += v;
         }
         for (final Double v : batteries.values()) {
-            total += -v;
+            total += v;
         }
         for (final Double v : solars.values()) {
-            total += -v;
+            total += v;
         }
         return total;
     }
@@ -108,7 +108,7 @@ public class BalancingMachine implements SystemPowerObserver, RecloserStatusObse
         try {
             if (!isClosed) {
                 final double power = totalPower();
-                publisher.setPowerSetpoint(power);
+                publisher.setPowerSetpoint(-1 * power);
             }
         } catch (Exception ex) {
             logger.warn("Could not publish update: " + ex);
