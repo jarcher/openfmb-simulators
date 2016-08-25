@@ -18,8 +18,8 @@
  */
 package com.greenenergycorp.openfmb.simulator.recloser;
 
+import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttObserver;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.xml.ModelCommon;
 import com.greenenergycorp.openfmb.simulator.xml.RecloserModel;
@@ -29,14 +29,14 @@ import java.util.Arrays;
 
 public class RecloserPublisher implements RecloserObserver {
 
-    private final MqttObserver mqttObserver;
+    private final MessageObserver messageObserver;
     private final DeviceId deviceId;
     private final OpenFmbXmlMarshaller marshaller;
     private final String readTopic;
     private final String eventTopic;
 
-    public RecloserPublisher(MqttObserver mqttObserver, DeviceId deviceId, OpenFmbXmlMarshaller marshaller, String readTopic, String eventTopic) {
-        this.mqttObserver = mqttObserver;
+    public RecloserPublisher(MessageObserver messageObserver, DeviceId deviceId, OpenFmbXmlMarshaller marshaller, String readTopic, String eventTopic) {
+        this.messageObserver = messageObserver;
         this.deviceId = deviceId;
         this.marshaller = marshaller;
         this.readTopic = readTopic;
@@ -54,7 +54,7 @@ public class RecloserPublisher implements RecloserObserver {
         ));
 
         final byte[] payloadBytes = marshaller.marshal(readProfile);
-        mqttObserver.publish(payloadBytes, readTopic + "/" + deviceId.getLogicalDeviceId());
+        messageObserver.publish(payloadBytes, readTopic, deviceId.getLogicalDeviceId());
     }
 
     public void recloserEventUpdate(final boolean isClosed, final boolean isBlocked) throws Exception {
@@ -63,7 +63,7 @@ public class RecloserPublisher implements RecloserObserver {
         final RecloserEventProfile eventProfile = RecloserModel.buildRecloserEvent(deviceId, isClosed, isBlocked);
 
         final byte[] payloadBytes = marshaller.marshal(eventProfile);
-        mqttObserver.publish(payloadBytes, eventTopic + "/" + deviceId.getLogicalDeviceId());
+        messageObserver.publish(payloadBytes, eventTopic, deviceId.getLogicalDeviceId());
 
     }
 }

@@ -18,8 +18,8 @@
  */
 package com.greenenergycorp.openfmb.simulator.battery;
 
+import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttObserver;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.xml.BatteryModel;
 import com.greenenergycorp.openfmb.simulator.xml.ModelCommon;
@@ -29,14 +29,14 @@ import java.util.Arrays;
 
 public class BatteryPublisher implements BatteryObserver {
 
-    private final MqttObserver mqttObserver;
+    private final MessageObserver messageObserver;
     private final DeviceId deviceId;
     private final OpenFmbXmlMarshaller marshaller;
     private final String readTopic;
     private final String eventTopic;
 
-    public BatteryPublisher(MqttObserver mqttObserver, DeviceId deviceId, OpenFmbXmlMarshaller marshaller, String readTopic, String eventTopic) {
-        this.mqttObserver = mqttObserver;
+    public BatteryPublisher(MessageObserver messageObserver, DeviceId deviceId, OpenFmbXmlMarshaller marshaller, String readTopic, String eventTopic) {
+        this.messageObserver = messageObserver;
         this.deviceId = deviceId;
         this.marshaller = marshaller;
         this.readTopic = readTopic;
@@ -53,7 +53,7 @@ public class BatteryPublisher implements BatteryObserver {
         ));
 
         final byte[] payloadBytes = marshaller.marshal(readProfile);
-        mqttObserver.publish(payloadBytes, readTopic + "/" + deviceId.getLogicalDeviceId());
+        messageObserver.publish(payloadBytes, readTopic, deviceId.getLogicalDeviceId());
     }
 
     public void batteryEventUpdate(boolean isConnected, boolean isCharging, String mode, double stateOfCharge) throws Exception {
@@ -62,6 +62,6 @@ public class BatteryPublisher implements BatteryObserver {
         final BatteryEventProfile eventProfile = BatteryModel.buildBatteryEvent(deviceId, isConnected, isCharging, mode, stateOfCharge);
 
         final byte[] payloadBytes = marshaller.marshal(eventProfile);
-        mqttObserver.publish(payloadBytes, eventTopic + "/" + deviceId.getLogicalDeviceId());
+        messageObserver.publish(payloadBytes, eventTopic, deviceId.getLogicalDeviceId());
     }
 }

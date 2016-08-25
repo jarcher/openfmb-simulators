@@ -18,11 +18,10 @@
  */
 package com.greenenergycorp.openfmb.simulator.recloser;
 
+import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.adapter.PayloadObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttAdapterManager;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttConfiguration;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttObserver;
+import com.greenenergycorp.openfmb.mapping.mqtt.*;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.PropertyUtil;
 import org.slf4j.Logger;
@@ -78,7 +77,9 @@ public class RecloserSimulator {
             }
         }, "mqtt publisher");
 
-        final RecloserPublisher recloserPublisher = new RecloserPublisher(mqttObserver, deviceId, openFmbXmlMarshaller, recloserReadTopic, recloserEventTopic);
+        final MessageObserver messageObserver = new MessageObserverAdapter(mqttObserver, new SimpleTopicMapping());
+
+        final RecloserPublisher recloserPublisher = new RecloserPublisher(messageObserver, deviceId, openFmbXmlMarshaller, recloserReadTopic, recloserEventTopic);
 
         final RecloserMachine machine = new RecloserMachine(recloserPublisher, voltage, hertz, 0.0);
 

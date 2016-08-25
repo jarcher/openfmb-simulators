@@ -18,22 +18,17 @@
  */
 package com.greenenergycorp.openfmb.simulator.solar;
 
+import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttAdapterManager;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttConfiguration;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttObserver;
+import com.greenenergycorp.openfmb.mapping.mqtt.*;
 import com.greenenergycorp.openfmb.simulator.DailyInterpolatedData;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.LineValueDataLoader;
 import com.greenenergycorp.openfmb.simulator.PropertyUtil;
-import com.greenenergycorp.openfmb.simulator.xml.SolarModel;
-import com.greenenergycorp.openfmb.xml.SolarEventProfile;
-import com.greenenergycorp.openfmb.xml.SolarReadingProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
-import java.util.Random;
 
 public class SolarSimulator {
 
@@ -86,53 +81,11 @@ public class SolarSimulator {
 
         mqttThread.start();
 
-        loop(mqttObserver, solarReadTopic + "/" + logicalDeviceId, solarEventTopic + "/" + logicalDeviceId, openFmbXmlMarshaller, dataSource, intervalMs, deviceId, scale, offset, jitterChance, jitterPercent);
+        final MessageObserver messageObserver = new MessageObserverAdapter(mqttObserver, new SimpleTopicMapping());
+
+        final SolarPublisher solarPublisher = new SolarPublisher(messageObserver, deviceId, openFmbXmlMarshaller, solarReadTopic, solarEventTopic);
+
+        SolarSimLoop.loop(solarPublisher, dataSource, intervalMs, scale, offset, jitterChance, jitterPercent);
     }
 
-    private static void loop(
-            final MqttObserver mqtt,
-            final String solarReadTopic,
-            final String solarEventTopic,
-            final OpenFmbXmlMarshaller openFmbXmlMarshaller,
-            final DailyInterpolatedData dataSource,
-            final long intervalMs,
-            final DeviceId deviceId,
-            final double scale,
-            final double offset,
-            final double jitterChance,
-            final double jitterPercent) throws InterruptedException {
-
-        final Random random = new Random(System.currentTimeMillis());
-
-        while (true) {
-            final long now = System.currentTimeMillis();
-
-            try {
-                final double inputValue = dataSource.atTime(now);
-                final double scaledValue = -1 * inputValue * scale + offset;
-
-                final double jitteredValue;
-                if (random.nextDouble() <= jitterChance) {
-                    final double jitterRange = jitterPercent * scaledValue;
-                    jitteredValue = scaledValue + ((jitterRange * random.nextDouble()) - (jitterRange / 2));
-                } else {
-                    jitteredValue = scaledValue;
-                }
-
-                final SolarReadingProfile read = SolarModel.buildSolarRead(deviceId, jitteredValue);
-                final byte[] readBytes = openFmbXmlMarshaller.marshal(read);
-                mqtt.publish(readBytes, solarReadTopic);
-
-                final SolarEventProfile event = SolarModel.buildSolarEvent(deviceId);
-                final byte[] eventBytes = openFmbXmlMarshaller.marshal(event);
-                mqtt.publish(eventBytes, solarEventTopic);
-
-            } catch (Exception ex) {
-                logger.error("Error publishing data: " + ex);
-            }
-
-            Thread.sleep(intervalMs);
-        }
-
-    }
 }
