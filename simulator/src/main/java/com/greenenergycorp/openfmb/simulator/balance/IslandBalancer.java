@@ -18,11 +18,10 @@
  */
 package com.greenenergycorp.openfmb.simulator.balance;
 
+import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.adapter.PayloadObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttAdapterManager;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttConfiguration;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttObserver;
+import com.greenenergycorp.openfmb.mapping.mqtt.*;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.PropertyUtil;
 import com.greenenergycorp.openfmb.simulator.recloser.SystemSubscribers;
@@ -70,13 +69,15 @@ public class IslandBalancer {
 
         final MqttObserver mqttObserver = mqttAdapterManager.getMessageObserver();
 
+        final MessageObserver messageObserver = new MessageObserverAdapter(mqttObserver, new SimpleTopicMapping());
+
         final Thread mqttThread = new Thread(new Runnable() {
             public void run() {
                 mqttAdapterManager.run();
             }
         }, "mqtt publisher");
 
-        final BatteryControlPublisher publisher = new BatteryControlPublisher(mqttObserver, deviceId, openFmbXmlMarshaller, batteryControlTopic);
+        final BatteryControlPublisher publisher = new BatteryControlPublisher(messageObserver, deviceId, openFmbXmlMarshaller, batteryControlTopic);
 
         final BalancingMachine machine = new BalancingMachine(logicalDeviceId, publisher);
 

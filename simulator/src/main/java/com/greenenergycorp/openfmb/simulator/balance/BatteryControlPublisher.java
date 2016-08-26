@@ -18,8 +18,8 @@
  */
 package com.greenenergycorp.openfmb.simulator.balance;
 
+import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
-import com.greenenergycorp.openfmb.mapping.mqtt.MqttObserver;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.battery.BatteryMachine;
 import com.greenenergycorp.openfmb.simulator.xml.BatteryModel;
@@ -29,13 +29,13 @@ import javax.xml.bind.JAXBException;
 
 public class BatteryControlPublisher {
 
-    private final MqttObserver mqttObserver;
+    private final MessageObserver messageObserver;
     private final DeviceId deviceId;
     private final OpenFmbXmlMarshaller marshaller;
     private final String batteryControlTopic;
 
-    public BatteryControlPublisher(MqttObserver mqttObserver, DeviceId deviceId, OpenFmbXmlMarshaller marshaller, String batteryControlTopic) {
-        this.mqttObserver = mqttObserver;
+    public BatteryControlPublisher(MessageObserver mqttObserver, DeviceId deviceId, OpenFmbXmlMarshaller marshaller, String batteryControlTopic) {
+        this.messageObserver = mqttObserver;
         this.deviceId = deviceId;
         this.marshaller = marshaller;
         this.batteryControlTopic = batteryControlTopic;
@@ -61,6 +61,6 @@ public class BatteryControlPublisher {
 
     private void publish(final BatteryControlProfile profile) throws JAXBException {
         final byte[] payloadBytes = marshaller.marshal(profile);
-        mqttObserver.publish(payloadBytes, batteryControlTopic + "/" + deviceId.getLogicalDeviceId());
+        messageObserver.publish(payloadBytes, batteryControlTopic, deviceId.getLogicalDeviceId());
     }
 }
