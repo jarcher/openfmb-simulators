@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class RecloserMachine implements SystemPowerObserver {
+public class RecloserMachine implements SystemPowerObserver, RecloserControlObserver {
 
     private final static Logger logger = LoggerFactory.getLogger(RecloserMachine.class);
 

@@ -16,16 +16,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.solar;
+package com.greenenergycorp.openfmb.simulator.xml.solar;
 
 import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
-import com.greenenergycorp.openfmb.simulator.xml.SolarModel;
+import com.greenenergycorp.openfmb.simulator.solar.SolarObserver;
 import com.greenenergycorp.openfmb.xml.SolarEventProfile;
 import com.greenenergycorp.openfmb.xml.SolarReadingProfile;
 
-public class SolarPublisher {
+public class SolarPublisher implements SolarObserver {
     private final MessageObserver messageObserver;
     private final DeviceId deviceId;
     private final OpenFmbXmlMarshaller marshaller;

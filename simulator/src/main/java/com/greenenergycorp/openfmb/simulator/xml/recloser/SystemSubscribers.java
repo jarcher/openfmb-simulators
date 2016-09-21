@@ -16,10 +16,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.recloser;
+package com.greenenergycorp.openfmb.simulator.xml.recloser;
 
 import com.greenenergycorp.openfmb.mapping.adapter.PayloadObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
+import com.greenenergycorp.openfmb.simulator.recloser.RecloserControlObserver;
+import com.greenenergycorp.openfmb.simulator.recloser.SystemPowerObserver;
 import com.greenenergycorp.openfmb.xml.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +32,11 @@ public class SystemSubscribers {
     public static class RecloserControlSubscriber implements PayloadObserver {
         private final static Logger logger = LoggerFactory.getLogger(RecloserControlSubscriber.class);
 
-        private final RecloserMachine machine;
+        private final RecloserControlObserver machine;
         private final OpenFmbXmlMarshaller marshaller;
         private final String logicalDeviceId;
 
-        public RecloserControlSubscriber(RecloserMachine machine, OpenFmbXmlMarshaller marshaller, String logicalDeviceId) {
+        public RecloserControlSubscriber(RecloserControlObserver machine, OpenFmbXmlMarshaller marshaller, String logicalDeviceId) {
             this.machine = machine;
             this.marshaller = marshaller;
             this.logicalDeviceId = logicalDeviceId;

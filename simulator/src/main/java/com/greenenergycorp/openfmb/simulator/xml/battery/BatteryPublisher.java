@@ -16,12 +16,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.battery;
+package com.greenenergycorp.openfmb.simulator.xml.battery;
 
 import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
-import com.greenenergycorp.openfmb.simulator.xml.BatteryModel;
+import com.greenenergycorp.openfmb.simulator.battery.BatteryObserver;
 import com.greenenergycorp.openfmb.simulator.xml.ModelCommon;
 import com.greenenergycorp.openfmb.xml.*;
 

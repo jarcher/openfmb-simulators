@@ -16,10 +16,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.balance;
+package com.greenenergycorp.openfmb.simulator.xml.balance;
 
 import com.greenenergycorp.openfmb.mapping.adapter.PayloadObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
+import com.greenenergycorp.openfmb.simulator.balance.RecloserStatusObserver;
 import com.greenenergycorp.openfmb.xml.RecloserEventProfile;
 import com.greenenergycorp.openfmb.xml.SwitchStatusKind;
 import org.slf4j.Logger;

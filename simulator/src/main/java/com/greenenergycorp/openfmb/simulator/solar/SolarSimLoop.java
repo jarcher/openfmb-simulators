@@ -25,10 +25,10 @@ import org.slf4j.LoggerFactory;
 import java.util.Random;
 
 public class SolarSimLoop {
-    private final static Logger logger = LoggerFactory.getLogger(SolarSimulator.class);
+    private final static Logger logger = LoggerFactory.getLogger(SolarSimLoop.class);
 
     public static void loop(
-            final SolarPublisher publisher,
+            final SolarObserver publisher,
             final DailyInterpolatedData dataSource,
             final long intervalMs,
             final double scale,

@@ -16,10 +16,11 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.xml;
+package com.greenenergycorp.openfmb.simulator.xml.battery;
 
 import com.greenenergycorp.openfmb.mapping.data.xml.CommonMapping;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
+import com.greenenergycorp.openfmb.simulator.xml.ModelCommon;
 import com.greenenergycorp.openfmb.xml.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;

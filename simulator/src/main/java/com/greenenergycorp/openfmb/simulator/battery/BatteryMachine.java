@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
-public class BatteryMachine {
+public class BatteryMachine implements BatteryControlObserver {
     private final static Logger logger = LoggerFactory.getLogger(BatteryMachine.class);
 
     private final BatteryObserver updateObserver;

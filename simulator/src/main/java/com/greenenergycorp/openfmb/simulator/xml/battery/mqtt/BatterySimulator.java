@@ -16,7 +16,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.battery;
+package com.greenenergycorp.openfmb.simulator.xml.battery.mqtt;
 
 import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.adapter.PayloadObserver;
@@ -24,6 +24,9 @@ import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
 import com.greenenergycorp.openfmb.mapping.mqtt.*;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.PropertyUtil;
+import com.greenenergycorp.openfmb.simulator.battery.BatteryMachine;
+import com.greenenergycorp.openfmb.simulator.xml.battery.BatteryPublisher;
+import com.greenenergycorp.openfmb.simulator.xml.battery.BatterySimPayloadObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

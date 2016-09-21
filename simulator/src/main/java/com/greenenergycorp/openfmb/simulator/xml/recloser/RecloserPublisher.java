@@ -16,13 +16,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.recloser;
+package com.greenenergycorp.openfmb.simulator.xml.recloser;
 
 import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
+import com.greenenergycorp.openfmb.simulator.recloser.RecloserObserver;
 import com.greenenergycorp.openfmb.simulator.xml.ModelCommon;
-import com.greenenergycorp.openfmb.simulator.xml.RecloserModel;
 import com.greenenergycorp.openfmb.xml.*;
 
 import java.util.Arrays;

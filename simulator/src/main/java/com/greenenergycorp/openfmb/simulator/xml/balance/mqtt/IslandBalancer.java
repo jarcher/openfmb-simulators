@@ -16,7 +16,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.balance;
+package com.greenenergycorp.openfmb.simulator.xml.balance.mqtt;
 
 import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.adapter.PayloadObserver;
@@ -24,7 +24,11 @@ import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
 import com.greenenergycorp.openfmb.mapping.mqtt.*;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.PropertyUtil;
-import com.greenenergycorp.openfmb.simulator.recloser.SystemSubscribers;
+import com.greenenergycorp.openfmb.simulator.balance.BalancingMachine;
+import com.greenenergycorp.openfmb.simulator.balance.BatteryControlIssuer;
+import com.greenenergycorp.openfmb.simulator.xml.balance.BalancerRecloserSubscriber;
+import com.greenenergycorp.openfmb.simulator.xml.balance.BatteryControlPublisher;
+import com.greenenergycorp.openfmb.simulator.xml.recloser.SystemSubscribers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +81,7 @@ public class IslandBalancer {
             }
         }, "mqtt publisher");
 
-        final BatteryControlPublisher publisher = new BatteryControlPublisher(messageObserver, deviceId, openFmbXmlMarshaller, batteryControlTopic);
+        final BatteryControlIssuer publisher = new BatteryControlPublisher(messageObserver, deviceId, openFmbXmlMarshaller, batteryControlTopic);
 
         final BalancingMachine machine = new BalancingMachine(logicalDeviceId, publisher);
 

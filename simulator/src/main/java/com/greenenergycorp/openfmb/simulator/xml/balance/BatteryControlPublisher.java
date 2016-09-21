@@ -16,26 +16,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.balance;
+package com.greenenergycorp.openfmb.simulator.xml.balance;
 
 import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
+import com.greenenergycorp.openfmb.simulator.balance.BatteryControlIssuer;
 import com.greenenergycorp.openfmb.simulator.battery.BatteryMachine;
-import com.greenenergycorp.openfmb.simulator.xml.BatteryModel;
+import com.greenenergycorp.openfmb.simulator.xml.battery.BatteryModel;
 import com.greenenergycorp.openfmb.xml.BatteryControlProfile;
 
 import javax.xml.bind.JAXBException;
 
-public class BatteryControlPublisher {
+public class BatteryControlPublisher implements BatteryControlIssuer {
 
     private final MessageObserver messageObserver;
     private final DeviceId deviceId;
     private final OpenFmbXmlMarshaller marshaller;
     private final String batteryControlTopic;
 
-    public BatteryControlPublisher(MessageObserver mqttObserver, DeviceId deviceId, OpenFmbXmlMarshaller marshaller, String batteryControlTopic) {
-        this.messageObserver = mqttObserver;
+    public BatteryControlPublisher(MessageObserver messageObserver, DeviceId deviceId, OpenFmbXmlMarshaller marshaller, String batteryControlTopic) {
+        this.messageObserver = messageObserver;
         this.deviceId = deviceId;
         this.marshaller = marshaller;
         this.batteryControlTopic = batteryControlTopic;

@@ -16,10 +16,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.battery;
+package com.greenenergycorp.openfmb.simulator.xml.battery;
 
 import com.greenenergycorp.openfmb.mapping.adapter.PayloadObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
+import com.greenenergycorp.openfmb.simulator.battery.BatteryControlObserver;
+import com.greenenergycorp.openfmb.simulator.battery.BatteryMachine;
 import com.greenenergycorp.openfmb.xml.BatteryControlProfile;
 import com.greenenergycorp.openfmb.xml.SetPoint;
 import org.slf4j.Logger;
@@ -30,9 +32,9 @@ public class BatterySimPayloadObserver implements PayloadObserver {
 
     private final OpenFmbXmlMarshaller openFmbXmlMarshaller;
     private final String logicalDeviceId;
-    private final BatteryMachine batterySimulator;
+    private final BatteryControlObserver batterySimulator;
 
-    public BatterySimPayloadObserver(OpenFmbXmlMarshaller openFmbXmlMarshaller, String logicalDeviceId, BatteryMachine batterySimulator) {
+    public BatterySimPayloadObserver(OpenFmbXmlMarshaller openFmbXmlMarshaller, String logicalDeviceId, BatteryControlObserver batterySimulator) {
         this.openFmbXmlMarshaller = openFmbXmlMarshaller;
         this.logicalDeviceId = logicalDeviceId;
         this.batterySimulator = batterySimulator;

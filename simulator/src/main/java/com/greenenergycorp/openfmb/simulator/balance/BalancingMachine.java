@@ -29,7 +29,7 @@ public class BalancingMachine implements SystemPowerObserver, RecloserStatusObse
     private final static Logger logger = LoggerFactory.getLogger(BalancingMachine.class);
 
     private final String sourceLogicalDeviceId;
-    private final BatteryControlPublisher publisher;
+    private final BatteryControlIssuer publisher;
 
     private boolean isClosed = true;
     private final Map<String, Double> batteries = new HashMap<String, Double>();
@@ -38,7 +38,7 @@ public class BalancingMachine implements SystemPowerObserver, RecloserStatusObse
 
     private final Object mutex = new Object();
 
-    public BalancingMachine(String sourceLogicalDeviceId, BatteryControlPublisher publisher) {
+    public BalancingMachine(String sourceLogicalDeviceId, BatteryControlIssuer publisher) {
         this.sourceLogicalDeviceId = sourceLogicalDeviceId;
         this.publisher = publisher;
     }

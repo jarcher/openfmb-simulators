@@ -16,7 +16,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.greenenergycorp.openfmb.simulator.solar;
+package com.greenenergycorp.openfmb.simulator.xml.solar.mqtt;
 
 import com.greenenergycorp.openfmb.mapping.adapter.MessageObserver;
 import com.greenenergycorp.openfmb.mapping.data.xml.OpenFmbXmlMarshaller;
@@ -25,6 +25,9 @@ import com.greenenergycorp.openfmb.simulator.DailyInterpolatedData;
 import com.greenenergycorp.openfmb.simulator.DeviceId;
 import com.greenenergycorp.openfmb.simulator.LineValueDataLoader;
 import com.greenenergycorp.openfmb.simulator.PropertyUtil;
+import com.greenenergycorp.openfmb.simulator.solar.SolarObserver;
+import com.greenenergycorp.openfmb.simulator.solar.SolarSimLoop;
+import com.greenenergycorp.openfmb.simulator.xml.solar.SolarPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +86,7 @@ public class SolarSimulator {
 
         final MessageObserver messageObserver = new MessageObserverAdapter(mqttObserver, new SimpleTopicMapping());
 
-        final SolarPublisher solarPublisher = new SolarPublisher(messageObserver, deviceId, openFmbXmlMarshaller, solarReadTopic, solarEventTopic);
+        final SolarObserver solarPublisher = new SolarPublisher(messageObserver, deviceId, openFmbXmlMarshaller, solarReadTopic, solarEventTopic);
 
         SolarSimLoop.loop(solarPublisher, dataSource, intervalMs, scale, offset, jitterChance, jitterPercent);
     }
