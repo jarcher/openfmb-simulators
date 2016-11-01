@@ -69,17 +69,33 @@ mvn clean install -Pslf4j-simple
 The build jar is put in the target directory and needs to be moved to the main directory where the properities files are located. 
 
 
-## Configuration
+## Configuration and Description
+
+The following is a description of the simulators and the associated property files.   These properties can be modified to reflect changes in the simulation.  As a rule the ID and MRID are always the same for a device.  The other properties are how the simulator operates and capacities of devices where appropriate. In addition the topics being used are defined and can be examined with MQTT Spy.
 
 The configuration of each simulator and the application resides in the property files.
 
-Configuration for the battery simulator resides [here](https://github.com/openfmb/openfmb-simulators/blob/master/batterysim.properties).
+### Energy Storage Simulator Description and Properties
 
-Configuration for the solar simulator resides [here](https://github.com/openfmb/openfmb-simulators/blob/master/solarsim.properties).
+This process simulates a battery that can be in standby mode, setpoint-driven mode, and either islanded or grid connected. It subscribes to the BatteryControlProfile for setpoints.   
 
-Configuration for the recloser simulator resides [here](https://github.com/openfmb/openfmb-simulators/blob/master/reclosersim.properties).
+The ESS simulator parameters are found in the batterysim.properties file.  Configuration for the battery simulator resides [here](https://github.com/openfmb/openfmb-simulators/blob/master/batterysim.properties).
 
-Configuration for the balancer application resider [here](https://github.com/openfmb/openfmb-simulators/blob/master/balancer.properties).
+### PV Simulator Description and Properties
+
+This process reads a file of 24 hours of one-hour output data, interpolating values to produce updates at a configurable interval.  
+
+The PV simulator parameters are found in the SolarSim.properties file.  Configuration for the solar simulator resides [here](https://github.com/openfmb/openfmb-simulators/blob/master/solarsim.properties).
+
+### Recloser Description and Properties
+
+This process simulates an open/closed breaker, handling RecloserControlProfiles to execute the flips. It also subscribes to all battery, solar, and resource power values to calculate a flow across the PCC.
+
+The Recloser Simulator parameters are found in the RecloserSim.properties file. Configuration for the recloser simulator resides [here](https://github.com/openfmb/openfmb-simulators/blob/master/reclosersim.properties).
+
+### Island Balancer Description
+
+This process subscribes to the recloser and detects islanding and grid connected modes. In Island mode it will set the battery to Island mode and issue setpoints to the battery to balance between microgrid generation and load. Configuration for the balancer application resider [here](https://github.com/openfmb/openfmb-simulators/blob/master/balancer.properties).
 
 Each properties files defines the following.
 ```
