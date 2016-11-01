@@ -6,7 +6,7 @@ This repository provides the simulators for ESS, Solar and the Recloser.  When b
 
 # Installing / Getting started
 
-{starting notes} NOTE: This project is used in the Dtech Demo.  Refer to [Wiki](https://github.com/openfmb/dtech-demo-2016/wiki) for information on DTech Demo. 
+NOTE: This project is used in the Dtech Demo.  Refer to [Wiki](https://github.com/openfmb/dtech-demo-2016/wiki) for information on DTech Demo. 
 
 To start the battery simulator
 ```shell
