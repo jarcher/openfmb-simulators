@@ -25,14 +25,16 @@ To start the balancer application
 java -cp openfmb-simulators-0.0.5-SNAPSHOT-jar-with-dependencies.jar com.greenenergycorp.openfmb.simulator.balance.IslandBalancer
 ```
 
-
 ## Building
+
+In order to build this project you must first build the [openfmb-adapters](https://github.com/openfmb/openfmb-adapters) project to create the XML to MQTT bindings. 
 
 ```shell
 git clone https://github.com/openfmb/openfmb-simulators.git
 cd openfmb-simulators
 mvn clean install -Pslf4j-simple
 ```
+
 The build jar is put in the target directory and needs to be moved to the main directory where the properities files are located. 
 
 
