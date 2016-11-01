@@ -48,21 +48,20 @@ Configuration for the recloser simulator resides [here](https://github.com/openf
 
 Configuration for the balancer application resider [here](https://github.com/openfmb/openfmb-simulators/blob/master/balancer.properties).
 
-Each properties files defined the following.
+Each properties files defines the following.
 ```
 device.logicalDeviceID
 device.mRID
 device.name
 device.description
 
- # topics to subscribe or publisher too
+# topics to subscribe or publisher too
  
- topic.<profile>=
+topic.<profile>=
  
- # parameters for the simulator including publish rate if appropriate
+# parameters for the simulator including publish rate if appropriate
  
 ```
-
 
 # Contributing
 
