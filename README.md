@@ -25,8 +25,7 @@ To start the balancer application
 java -cp openfmb-simulators-0.0.5-SNAPSHOT-jar-with-dependencies.jar com.greenenergycorp.openfmb.simulator.balance.IslandBalancer
 ```
 
-To run another simulator you will need to modify the simulator properties file.  
-A modified properties file for solar has been provided below. This can be copy and pasted in to a file called solarsim2.properities.
+To run another simulator you will need to modify the simulator properties file.  A modified properties file for solar has been provided below. This can be copy and pasted in to a file called solarsim2.properities.
 
 New properites file for solar simulator
 ```
@@ -49,7 +48,7 @@ config.intervalMs=1000
 ```
 
 Note that the key items to change are the ID and MRID to avoid conflict.  In this case we incremented the suffix to **2**. 
-To run the simulator with this property file you will need to be in the **sim** directory to use the following command.
+To run the simulator with this property file you will need to be in the same directory as the jar to use the following command.
 
 ```
 java -cp openfmb-simulators-0.0.5-SNAPSHOT-jar-with-dependencies.jar -Dconfig.sim.path=solarsim2.properties  com.greenenergycorp.openfmb.simulator.solar.SolarSimulator
