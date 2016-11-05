@@ -55,6 +55,10 @@ java -cp openfmb-simulators-0.0.5-SNAPSHOT-jar-with-dependencies.jar -Dconfig.si
 ```
 The HMI will now show a new solar device on the web page.
 
+## Dependencies
+
+Please refer to the Wiki pages for the [Demonstration](https://github.com/openfmb/turnkey-dtech-demo-2016/wiki/Simulation-Demonstration) and [Prerequisites](https://github.com/openfmb/turnkey-dtech-demo-2016/wiki/Simulation-Prerequisites) for the demo and these cooresponding repository projects. 
+
 ## Building
 
 In order to build this project you must first build the [openfmb-adapters](https://github.com/openfmb/openfmb-adapters) project to create the XML to MQTT bindings. 
